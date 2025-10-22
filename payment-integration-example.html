@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ClipFlow - Purchase License</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .price-card { border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; text-align: center; }
+        button { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>🎯 ClipFlow License</h1>
+    
+    <div class="price-card">
+        <h2>Lifetime License</h2>
+        <div style="font-size: 2em; margin: 20px 0;">$19.99</div>
+        <ul style="text-align: left; margin: 20px 0;">
+            <li>✅ Unlimited clipboard storage</li>
+            <li>✅ Smart categorization</li>
+            <li>✅ Global keyboard shortcuts</li>
+            <li>✅ No subscription fees</li>
+            <li>✅ Works on 1 device</li>
+            <li>✅ Free updates for 1 year</li>
+        </ul>
+        <button onclick="purchaseLicense()">Purchase License</button>
+    </div>
+
+    <script>
+        // STRIPE INTEGRATION EXAMPLE
+        const stripe = Stripe('pk_test_your_stripe_public_key')
+
+        async function purchaseLicense() {
+            try {
+                // Create checkout session
+                const response = await fetch('https://your-server.com/api/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        priceId: 'price_clipflow_license', // Your Stripe price ID
+                        successUrl: 'https://clipflow.com/success',
+                        cancelUrl: 'https://clipflow.com/purchase'
+                    })
+                })
+
+                const { sessionId } = await response.json()
+                
+                // Redirect to Stripe checkout
+                const { error } = await stripe.redirectToCheckout({ sessionId })
+                
+                if (error) {
+                    console.error('Stripe error:', error)
+                    alert('Payment failed. Please try again.')
+                }
+            } catch (error) {
+                console.error('Purchase error:', error)
+                alert('Purchase failed. Please try again.')
+            }
+        }
+
+        // ALTERNATIVE: PADDLE INTEGRATION
+        function purchaseWithPaddle() {
+            Paddle.Checkout.open({
+                product: 'your_paddle_product_id',
+                email: 'customer@example.com',
+                successCallback: function(data) {
+                    // Generate and send license key
+                    generateLicenseKey(data.checkout.id)
+                }
+            })
+        }
+
+        // ALTERNATIVE: GUMROAD INTEGRATION
+        function purchaseWithGumroad() {
+            window.open('https://gumroad.com/l/clipflow-license', '_blank')
+        }
+    </script>
+</body>
+</html>

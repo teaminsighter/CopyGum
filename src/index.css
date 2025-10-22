@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  #root {
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* Hide all scrollbars completely */
+  * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  *::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl;
+  }
+  
+  .glass-panel {
+    @apply backdrop-blur-xl bg-black/30 border-t border-white/10;
+  }
+  
+  .momentum-scroll {
+    scroll-behavior: smooth;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .momentum-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .category-badge {
+    @apply px-2 py-1 text-xs rounded-full bg-white/20 text-white border border-white/30;
+  }
+  
+  .type-badge {
+    @apply px-2 py-1 text-xs rounded-full border;
+  }
+  
+  .type-text {
+    @apply bg-green-500/20 text-green-300 border-green-400/50;
+  }
+  
+  .type-code {
+    @apply bg-purple-500/20 text-purple-300 border-purple-400/50;
+  }
+  
+  .type-color {
+    @apply bg-amber-500/20 text-amber-300 border-amber-400/50;
+  }
+  
+  .type-url {
+    @apply bg-blue-500/20 text-blue-300 border-blue-400/50;
+  }
+  
+  .type-email {
+    @apply bg-pink-500/20 text-pink-300 border-pink-400/50;
+  }
+  
+  .type-password {
+    @apply bg-red-500/20 text-red-300 border-red-400/50;
+  }
+  
+  .type-number {
+    @apply bg-cyan-500/20 text-cyan-300 border-cyan-400/50;
+  }
+  
+  .type-api {
+    @apply bg-indigo-500/20 text-indigo-300 border-indigo-400/50;
+  }
+  
+  /* Custom scrollbar for containers that need it */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+}
