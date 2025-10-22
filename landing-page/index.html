@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CopyGum - Smart Clipboard Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
@@ -43,7 +42,7 @@
                 </a>
             </div>
             <p class="text-sm text-blue-200 mt-4">
-                No credit card required • Works on macOS, Windows & Linux
+                No credit card required • Works on macOS
             </p>
         </div>
     </section>
@@ -81,37 +80,21 @@
     <!-- Pricing Section -->
     <section id="pricing" class="py-20 bg-gray-50">
         <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-4">Simple, Transparent Pricing</h2>
-            <p class="text-gray-600 text-center mb-12">Start with a 7-day free trial. No credit card required.</p>
+            <h2 class="text-3xl font-bold text-center mb-4">Get Your Free License</h2>
+            <p class="text-gray-600 text-center mb-12">Free 1-year licenses available! Just enter your email to get started.</p>
             
-            <div class="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                <!-- Monthly Plan -->
-                <div class="bg-white rounded-lg shadow-lg p-8 border">
-                    <h3 class="text-xl font-semibold mb-2">Monthly</h3>
-                    <div class="text-3xl font-bold mb-4">$9.99<span class="text-lg text-gray-500">/month</span></div>
+            <div class="max-w-md mx-auto">
+                <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-green-500 relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                        100% Free
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Free 1-Year License</h3>
+                    <div class="text-3xl font-bold mb-4">$0<span class="text-lg text-gray-500">/year</span></div>
                     <ul class="space-y-3 mb-8">
                         <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Unlimited clipboard storage</li>
                         <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Smart categorization</li>
                         <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Global shortcuts</li>
-                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Cancel anytime</li>
-                    </ul>
-                    <button onclick="showEmailForm()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                        Get Free License
-                    </button>
-                </div>
-
-                <!-- Yearly Plan -->
-                <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-green-500 relative">
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                        Save 59%
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Yearly</h3>
-                    <div class="text-3xl font-bold mb-4">$49<span class="text-lg text-gray-500">/year</span></div>
-                    <ul class="space-y-3 mb-8">
-                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Everything in Monthly</li>
-                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Priority support</li>
-                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Early access to new features</li>
-                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Best value!</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span>Privacy-first design</li>
                     </ul>
                     <button onclick="showEmailForm()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                         Get Free License
@@ -119,11 +102,7 @@
                 </div>
             </div>
 
-            <p class="text-center text-gray-500 mt-8">
-                Free 1-year licenses available! Just enter your email to get started.
-            </p>
-            
-            <!-- Email License Form (Hidden by default) -->
+            <!-- Email License Form -->
             <div id="emailForm" class="hidden mt-8 max-w-md mx-auto">
                 <div class="bg-white rounded-lg shadow-lg p-6 border">
                     <h3 class="text-lg font-semibold mb-4 text-center">Get Your Free License</h3>
@@ -212,14 +191,13 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                    <p>&copy; 2024 CopyGum. All rights reserved.</p>
+                <p>&copy; 2024 CopyGum. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Email-based licensing (Stripe integration will be added later)
-
+        // Email-based licensing
         function showEmailForm() {
             document.getElementById('emailForm').classList.remove('hidden')
             document.getElementById('emailInput').focus()

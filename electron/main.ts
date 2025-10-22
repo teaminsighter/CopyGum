@@ -585,7 +585,6 @@ function startActiveAppTracking() {
 function startClipboardMonitoring() {
   setInterval(async () => {
     let currentContent = clipboard.readText()
-    let contentType = 'text'
     const now = Date.now()
     
     // Check for image content if text is empty
@@ -593,7 +592,6 @@ function startClipboardMonitoring() {
       const image = clipboard.readImage()
       if (!image.isEmpty()) {
         currentContent = image.toDataURL()
-        contentType = 'image'
       } else {
         return
       }

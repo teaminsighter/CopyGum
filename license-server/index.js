@@ -1,4 +1,4 @@
-// LICENSE SERVER EXAMPLE (Node.js + Express)
+// CopyGum License Server - Email-based licensing (temporary until Stripe setup)
 // Deploy this to Vercel, Netlify, or any hosting service
 
 const express = require('express')
@@ -11,33 +11,17 @@ app.use(express.json())
 
 // In production, use a proper database (MongoDB, PostgreSQL, etc.)
 const licenses = new Map()
+const emailLicenses = new Map() // Store email-based licenses
 
 // Example license keys (generate these securely)
 const validLicenses = {
-  'CLIP-MONTHLY-DEMO-KEY': { 
-    deviceLimit: 1, 
-    subscriptionType: 'monthly',
-    subscriptionId: 'sub_example123',
-    status: 'active',
-    expiryDate: '2025-01-22',
-    features: ['unlimited_storage', 'smart_categorization'],
-    price: 9.99
-  },
-  'CLIP-YEARLY-DEMO-KEY1': { 
-    deviceLimit: 1, 
-    subscriptionType: 'yearly',
-    subscriptionId: 'sub_example456',
+  'COPY-GUM-DEMO-KEY1': { 
+    deviceLimit: 3, 
+    subscriptionType: 'free_yearly',
     status: 'active',
     expiryDate: '2025-10-22',
-    features: ['unlimited_storage', 'smart_categorization', 'priority_support'],
-    price: 49.00
-  },
-  'CLIP-TRIAL-EXPIRED-01': { 
-    deviceLimit: 1, 
-    subscriptionType: 'trial',
-    status: 'expired',
-    expiryDate: '2024-10-15',
-    features: ['basic']
+    features: ['unlimited_storage', 'smart_categorization'],
+    email: 'demo@copygum.com'
   }
 }
 
@@ -47,36 +31,88 @@ function generateLicenseKey() {
   for (let i = 0; i < 4; i++) {
     segments.push(crypto.randomBytes(2).toString('hex').toUpperCase())
   }
-  return `CLIP-${segments.join('-')}`
+  return `COPY-${segments.join('-')}`
 }
+
+// Email-based license generation (temporary until Stripe setup)
+app.post('/api/generate-license', (req, res) => {
+  try {
+    const { email } = req.body
+    
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Valid email required' })
+    }
+
+    // Check if email already has a license
+    if (emailLicenses.has(email)) {
+      const existingLicense = emailLicenses.get(email)
+      return res.json({
+        success: true,
+        licenseKey: existingLicense.licenseKey,
+        message: 'License already exists for this email',
+        expiryDate: existingLicense.expiryDate
+      })
+    }
+
+    const licenseKey = generateLicenseKey()
+    const expiryDate = new Date()
+    expiryDate.setFullYear(expiryDate.getFullYear() + 1) // 1 year free for now
+
+    const licenseData = {
+      email,
+      subscriptionType: 'free_yearly',
+      status: 'active',
+      deviceLimit: 3,
+      expiryDate: expiryDate.toISOString().split('T')[0],
+      features: ['unlimited_storage', 'smart_categorization'],
+      licenseKey
+    }
+
+    validLicenses[licenseKey] = licenseData
+    emailLicenses.set(email, licenseData)
+
+    res.json({
+      success: true,
+      licenseKey,
+      expiryDate: licenseData.expiryDate,
+      message: 'Free 1-year license generated! Save this license key.'
+    })
+  } catch (error) {
+    console.error('Generate license error:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
 
 // Validate license endpoint
 app.post('/api/validate', (req, res) => {
-  const { licenseKey, deviceId, version } = req.body
+  const { licenseKey, deviceId } = req.body
 
   console.log(`🔐 License validation request:`, { licenseKey, deviceId })
 
   // Check if license exists
   const licenseData = validLicenses[licenseKey]
   if (!licenseData) {
-    return res.status(400).json({
+    return res.json({
       valid: false,
+      deviceId,
       error: 'Invalid license key'
     })
   }
 
   // Check subscription status
   if (licenseData.status !== 'active') {
-    return res.status(400).json({
+    return res.json({
       valid: false,
+      deviceId,
       error: `Subscription is ${licenseData.status}`
     })
   }
 
   // Check expiry date
   if (new Date() > new Date(licenseData.expiryDate)) {
-    return res.status(400).json({
+    return res.json({
       valid: false,
+      deviceId,
       error: 'Subscription expired'
     })
   }
@@ -87,8 +123,9 @@ app.post('/api/validate', (req, res) => {
   
   if (!registeredDevices.includes(deviceId)) {
     if (registeredDevices.length >= licenseData.deviceLimit) {
-      return res.status(400).json({
+      return res.json({
         valid: false,
+        deviceId,
         error: 'Device limit reached'
       })
     }
@@ -106,33 +143,51 @@ app.post('/api/validate', (req, res) => {
   })
 })
 
-// Generate new license (for your internal use)
-app.post('/api/generate', (req, res) => {
-  const { adminKey, deviceLimit = 1, expiryDays = 365 } = req.body
-  
-  // Simple admin protection
-  if (adminKey !== 'your-secret-admin-key') {
-    return res.status(403).json({ error: 'Unauthorized' })
+// Get license by email endpoint
+app.post('/api/get-license', (req, res) => {
+  try {
+    const { email } = req.body
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email required' })
+    }
+
+    const license = emailLicenses.get(email)
+    
+    if (!license) {
+      return res.json({ 
+        found: false,
+        message: 'No license found for this email' 
+      })
+    }
+
+    res.json({
+      found: true,
+      licenseKey: license.licenseKey,
+      expiryDate: license.expiryDate,
+      subscriptionType: license.subscriptionType
+    })
+  } catch (error) {
+    console.error('Get license error:', error)
+    res.status(500).json({ error: 'Internal server error' })
   }
-  
-  const licenseKey = generateLicenseKey()
-  const expiryDate = new Date()
-  expiryDate.setDate(expiryDate.getDate() + expiryDays)
-  
-  validLicenses[licenseKey] = {
-    deviceLimit,
-    expiryDate: expiryDate.toISOString().split('T')[0],
-    features: ['unlimited_storage']
-  }
-  
-  res.json({
-    licenseKey,
-    expiryDate: expiryDate.toISOString().split('T')[0]
-  })
 })
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'CopyGum License Server',
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      '/api/generate-license': 'POST - Generate free license with email',
+      '/api/validate': 'POST - Validate license key',
+      '/api/get-license': 'POST - Get license by email'
+    }
+  })
+})
+
+app.get('/health', (_, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 

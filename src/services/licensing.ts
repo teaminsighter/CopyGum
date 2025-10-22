@@ -88,8 +88,8 @@ class LicensingService {
   // Validate license key online
   async validateLicenseOnline(licenseKey: string): Promise<LicenseValidationResponse> {
     try {
-      // Production license server endpoint (update after Vercel deployment)
-      const response = await fetch('https://copygum-license.vercel.app/api/validate', {
+      // Production license server endpoint (replace with your actual Vercel URL)
+      const response = await fetch('https://copy-gum.vercel.app/api/validate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
