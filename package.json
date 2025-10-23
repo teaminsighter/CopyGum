@@ -29,7 +29,8 @@
     "files": [
       "dist/**/*",
       "dist-electron/**/*",
-      "node_modules/**/*",
+      "!node_modules/**/*",
+      "node_modules/active-win/**/*",
       "entitlements.mac.plist"
     ],
     "extraResources": [
@@ -50,8 +51,7 @@
       "hardenedRuntime": true,
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
-      "gatekeeperAssess": false,
-      "icon": "assets/icon.icns"
+      "gatekeeperAssess": false
     },
     "win": {
       "target": [
